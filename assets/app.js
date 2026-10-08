@@ -11,10 +11,13 @@ function el(tag,cls,html){var e=document.createElement(tag);if(cls)e.className=c
 var EMAIL=/^[^@\s]+@[^@\s]+\.[^@\s]+$/, PFX="kitaSpx5";
 try{var t=new URLSearchParams(location.search).get("t"); if(t&&EMAIL.test(t)) LS.set(PFX+"Teacher",t);}catch(e){}
 
-/* mobile nav */
-var tog=$("#nav-toggle");
-if(tog){tog.addEventListener("click",function(){var o=document.body.classList.toggle("nav-open");tog.setAttribute("aria-expanded",o?"true":"false");});}
-
+/* nav: open/closed state persists across sections and pages (saved on this device) */
+var tog=$("#nav-toggle"), bar=$("#navbar");
+function navH(){if(bar)document.documentElement.style.setProperty("--navh",(bar.offsetHeight+8)+"px");}
+function navSet(o,save){document.body.classList.toggle("nav-open",o);if(tog){tog.setAttribute("aria-expanded",o?"true":"false");tog.textContent=o?"✕ סגירה":"☰ תפריט";tog.setAttribute("aria-label",o?"סגירת התפריט":"פתיחת התפריט");}if(save)LS.set(PFX+"Nav",o?"1":"0");navH();}
+navSet(document.body.classList.contains("nav-open"),false);
+if(tog){tog.addEventListener("click",function(){navSet(!document.body.classList.contains("nav-open"),true);});}
+window.addEventListener("resize",navH);
 /* ---------- TTS (he-IL) ---------- */
 var TTS={supported:("speechSynthesis" in window)&&("SpeechSynthesisUtterance" in window),voice:null,queue:[],
   pick:function(){if(!TTS.supported)return null;var vs=speechSynthesis.getVoices()||[];for(var i=0;i<vs.length;i++){if(/^he|^iw/i.test(vs[i].lang))return vs[i];}return null;},
