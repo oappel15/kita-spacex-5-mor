@@ -159,7 +159,7 @@ if(pl){
   var fields=$$("textarea,select",pl);
   fields.forEach(function(f){var k=PFX+"Plan:"+f.id;var v=LS.get(k,"");if(v)f.value=v;f.addEventListener("input",function(){LS.set(k,f.value);});f.addEventListener("change",function(){LS.set(k,f.value);});});
   function text(){var out=[];fields.forEach(function(f){var lab=$('label[for="'+f.id+'"]',pl);var v=(f.value||"").trim();if(v)out.push((lab?lab.textContent.replace(/\s+/g," ").trim()+"\n":"")+v);});return out.join("\n\n");}
-  $("#plan-read").addEventListener("click",function(){var note=$("#plan-note");if(!TTS.supported){note.textContent="הדפדפן הזה לא תומך בהקראה.";return;}var t=text();if(!t){note.textContent="עוד לא כתבתם כלום. 🙂";return;}TTS.speakText([{el:null,text:t.replace(/\n+/g,". ")}],0.95);ttsMsg(note);});
+  $("#plan-read").addEventListener("click",function(){var note=$("#plan-note");if(!TTS.supported){note.textContent="הדפדפן הזה לא תומך בהקראה.";return;}var t=text();if(!t){note.textContent="עוד לא כתבתם כלום. 🙂";return;}TTS.speakText([{el:null,text:t.replace(/([^.!?:])\n+/g,"$1. ").replace(/\n+/g," ")}],0.95);ttsMsg(note);});
   $("#plan-copy").addEventListener("click",function(){var t=text(),note=$("#plan-note");if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(function(){note.textContent="הועתק! אפשר להדביק במסמך או במייל.";},function(){note.textContent="לא הצלחנו להעתיק. אפשר לסמן ולהעתיק ידנית.";});}else note.textContent="לא הצלחנו להעתיק. אפשר לסמן ולהעתיק ידנית.";});
   $("#plan-clear").addEventListener("click",function(){fields.forEach(function(f){f.value=f.tagName==="SELECT"?f.options[0].value:"";LS.del(PFX+"Plan:"+f.id);});$("#plan-note").textContent="נמחק מהמכשיר הזה.";});
 }
